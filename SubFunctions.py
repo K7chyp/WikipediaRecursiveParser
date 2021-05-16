@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-from BaseClassPage import WikipediaPageParser
 from re import sub
 
 

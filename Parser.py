@@ -3,10 +3,8 @@ from BaseClassPage import WikipediaPageParser
 from tqdm import tqdm
 
 RECURSIVE: bool = bool(int(input("1: - Recursive True, 0: - False ")))
-wiki_type: str = str("Choose wikipedia language. For instance ru or en ")
+wiki_type: str = str(input("Choose wikipedia language. For instance ru or en "))
 url: str = str(input("Input a wiki url page "))
-
-assert len(wiki_type) == 2, "Wiki type should be like ru or en"
 
 WIKIPEDIA_URL = "https://{}.wikipedia.org".format(wiki_type)
 
@@ -26,6 +24,6 @@ if RECURSIVE:
     for href in tqdm(hrefs):
         information_from_page, local_hrefs = get_output_from_page(WIKIPEDIA_URL + href)
         output: dict = dict_preprocessing(information_from_page, output)
-        hrefs: dict = dict_preprocessing(local_hrefs)
+        hrefs.append(local_hrefs)
 
-print(output)
+print(output, len(hrefs))
