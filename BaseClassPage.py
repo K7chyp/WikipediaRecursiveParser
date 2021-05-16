@@ -2,7 +2,6 @@ from BaseClassBrowser import BaseClassPageSettings
 from SubFunctions import get_all_product_hrefs_from_page
 from SubFunctions import clear_nums_in_brascets
 from SubFunctions import find_all_something_in_soup_by_class
-from re import sub
 
 
 class WikipediaPageParser(BaseClassPageSettings):
