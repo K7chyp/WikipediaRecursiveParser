@@ -1,5 +1,5 @@
 from BaseClassBrowser import BaseClassPageSettings
-from SubFunctions import get_all_product_hrefs_from_page
+from SubFunctions import get_all_hrefs_from_page
 from SubFunctions import clear_nums_in_brascets
 from SubFunctions import find_all_something_in_soup_by_class
 
@@ -12,7 +12,7 @@ class WikipediaPageParser(BaseClassPageSettings):
         self.get_information_from_right_table()
 
     def get_common_info_about_page(self) -> None:
-        self.hrefs: list = get_all_product_hrefs_from_page(self.soup)
+        self.hrefs: list = get_all_hrefs_from_page(self.soup)
         self.text_from_page: str = clear_nums_in_brascets(
             "".join([part_of_page.text for part_of_page in self.soup.find_all("p")]),
         )

@@ -1,14 +1,35 @@
 from bs4 import BeautifulSoup
 from re import sub
+from re import search
+from re import compile
 
 
-def get_all_product_hrefs_from_page(soup: BeautifulSoup):
+def is_href_valid(href) -> bool:
+    for pattern in (
+        "https",
+        "Wikipedia",
+        "wikimedia",
+        "Category",
+        "Special",
+        "//",
+        "Help",
+        'Portal',
+        'Talk',
+        'Main_Page'
+    ):
+        if compile(pattern).search(href) is not None:
+            return False
+    return True
+
+
+def get_all_hrefs_from_page(soup: BeautifulSoup):
     return [
         part_of_page.get("href")
         for part_of_page in soup.find_all("a")
-        if "/wiki/" in str(part_of_page)
-        and ("https" or "wikipedia" or "category" or "special")
-        not in str(part_of_page).lower()
+        if (
+            "wiki" in str(part_of_page.get("href"))
+            and is_href_valid(str(part_of_page.get("href")))
+        )
     ]
 
 
