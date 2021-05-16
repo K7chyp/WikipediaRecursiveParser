@@ -17,6 +17,7 @@ class BaseClassPageSettings:
 
     def set_browser(self):
         self.options = webdriver.ChromeOptions()
+        self.options.headless = True
         self.browser = webdriver.Chrome(
             str(os.path.dirname(os.path.realpath(__file__)))
             + "/SeleniumFiles/chromedriver",
