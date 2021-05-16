@@ -5,7 +5,7 @@ def main():
     print(
         WikipediaPageParser(
             "https://en.wikipedia.org/wiki/Python_(programming_language)"
-        ).right_table
+        ).hrefs
     )
 
 
