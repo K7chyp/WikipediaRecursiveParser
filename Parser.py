@@ -19,11 +19,19 @@ def get_output_from_page(url) -> dict:
     return {str(url): information_from_page}, hrefs
 
 
+def preprocess_output(href: str, output: dict, hrefs: list):
+    information_from_page, local_hrefs = get_output_from_page(WIKIPEDIA_URL + href)
+    output: dict = dict_preprocessing(information_from_page, output)
+    hrefs.append(local_hrefs)
+    return output, hrefs
+
+
 if RECURSIVE:
     output, hrefs = get_output_from_page(url)
     for href in tqdm(hrefs):
-        information_from_page, local_hrefs = get_output_from_page(WIKIPEDIA_URL + href)
-        output: dict = dict_preprocessing(information_from_page, output)
-        hrefs.append(local_hrefs)
+        if type(href) == list: 
+            continue
+        output, hrefs = preprocess_output(href, output, hrefs)
+
 
 print(output, len(hrefs))

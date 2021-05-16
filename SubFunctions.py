@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, element
 from re import sub
 from re import search
 from re import compile
@@ -13,9 +13,10 @@ def is_href_valid(href) -> bool:
         "Special",
         "//",
         "Help",
-        'Portal',
-        'Talk',
-        'Main_Page'
+        "Portal",
+        "Talk",
+        "Main_Page",
+        "File",
     ):
         if compile(pattern).search(href) is not None:
             return False
@@ -23,14 +24,21 @@ def is_href_valid(href) -> bool:
 
 
 def get_all_hrefs_from_page(soup: BeautifulSoup):
-    return [
+    hrefs = []
+    for item in (
         part_of_page.get("href")
         for part_of_page in soup.find_all("a")
         if (
             "wiki" in str(part_of_page.get("href"))
             and is_href_valid(str(part_of_page.get("href")))
         )
-    ]
+    ):
+        if type(item) == str:
+            hrefs.append(item)
+        elif type(item) == list:
+            for elem in item:
+                hrefs.append(elem)
+    return hrefs
 
 
 def clear_nums_in_brascets(string: str) -> str:

@@ -3,9 +3,9 @@ from BaseClassPage import WikipediaPageParser
 
 def main():
     print(
-        WikipediaPageParser(
-            "https://en.wikipedia.org/wiki/Python_(programming_language)"
-        ).hrefs
+        len(WikipediaPageParser(
+            "https://en.wikipedia.org/wiki/Diet_of_Speyer_(1529)"
+        ).hrefs)
     )
 
  
