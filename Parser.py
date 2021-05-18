@@ -3,14 +3,13 @@ from SubFunctions import writerow_preprocessing
 from BaseClassPage import WikipediaPageParser
 from tqdm import tqdm
 from csv import writer
+from re import search
 
-RECURSIVE: bool = bool(int(input("1: - Recursive True, 0: - False ")))
-RECUSIVE_DEPTH: int = int(input('Input recursive depth ')) if RECURSIVE else 0
-FILENAME: str = str(input('Input a filename .csv '))
-wiki_type: str = str(input("Choose wikipedia language. For instance ru or en "))
+RECUSIVE_DEPTH: int = int(input("Input recursive depth "))
+FILENAME: str = str(input("Input a filename .csv "))
 url: str = str(input("Input a wiki url page "))
 
-WIKIPEDIA_URL = "https://{}.wikipedia.org".format(wiki_type)
+WIKIPEDIA_URL = "https://{}.wikipedia.org".format(search("\/..\.", url).group(0)[1:-1])
 
 
 def get_output_from_page(url) -> dict:
@@ -29,25 +28,23 @@ def preprocess_output(href: str, output: dict, hrefs: list):
     hrefs.append(local_hrefs)
     return output, hrefs
 
-def get_recursive(output, hrefs): 
+
+def get_recursive(output, hrefs):
     for href in tqdm(hrefs):
-        if type(href) == list: 
+        if type(href) == list:
             continue
         output, new_hrefs = preprocess_output(href, output, hrefs)
     return output, new_hrefs
-    
 
-if RECURSIVE:
+
+def recursive_page_parser(url, filename, recursive_depth):
     output, hrefs = get_output_from_page(url)
     output, new_hrefs = get_recursive(output, hrefs)
-    for _ in range(RECUSIVE_DEPTH + 1):
+    for _ in range(recursive_depth + 1):
         output, new_hrefs = get_recursive(output, new_hrefs)
-        
-        
 
-with open(f"{FILENAME}.csv", "w") as csv_file:
-    write = writer(csv_file)
-    write.writerow(['href', 'text', 'info'])
-    for href, elemnts in output.items():
-        write.writerow(writerow_preprocessing(href, elemnts))
-
+    with open(f"{filename}.csv", "w") as csv_file:
+        write = writer(csv_file)
+        write.writerow(["href", "text", "info"])
+        for href, elemnts in output.items():
+            write.writerow(writerow_preprocessing(href, elemnts))

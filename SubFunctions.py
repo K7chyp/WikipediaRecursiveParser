@@ -49,7 +49,7 @@ def find_all_something_in_soup_by_class(
     soup: BeautifulSoup, tag: str, class_: dict
 ) -> list:
     return [
-        clear_nums_in_brascets(content.text.replace("\xa0", " ").replace(r"\n", " "))
+        clear_nums_in_brascets(content.text.replace("\xa0", " ").replace("\n", " "))
         for content in soup.find_all(tag, class_)
     ]
 
