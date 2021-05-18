@@ -5,22 +5,22 @@ from re import compile
 
 
 def is_href_valid(href) -> bool:
-    for pattern in (
-        "https",
-        "Wikipedia",
-        "wikimedia",
-        "Category",
-        "Special",
-        "//",
-        "Help",
-        "Portal",
-        "Talk",
-        "Main_Page",
-        "File",
-    ):
-        if compile(pattern).search(href) is not None:
-            return False
-    return True
+    return all(
+        compile(pattern).search(href) is None
+        for pattern in (
+            "https",
+            "Wikipedia",
+            "wikimedia",
+            "Category",
+            "Special",
+            "//",
+            "Help",
+            "Portal",
+            "Talk",
+            "Main_Page",
+            "File",
+        )
+    )
 
 
 def get_all_hrefs_from_page(soup: BeautifulSoup):
@@ -49,7 +49,7 @@ def find_all_something_in_soup_by_class(
     soup: BeautifulSoup, tag: str, class_: dict
 ) -> list:
     return [
-        clear_nums_in_brascets(content.text.replace("\xa0", " "))
+        clear_nums_in_brascets(content.text.replace("\xa0", " ").replace(r"\n", " "))
         for content in soup.find_all(tag, class_)
     ]
 
@@ -58,3 +58,8 @@ def dict_preprocessing(dict_last_iteration: dict, dict_new_itrearion: dict) -> d
     utility_dict: dict = dict_new_itrearion.copy()
     dict_new_itrearion: dict = {**utility_dict, **dict_last_iteration}
     return dict_new_itrearion
+
+def writerow_preprocessing(
+    short_article_name: str, dict_with_information: dict
+) -> list:
+    return [short_article_name] + [item for _, item in dict_with_information.items()]

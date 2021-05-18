@@ -1,9 +1,11 @@
 from SubFunctions import dict_preprocessing
+from SubFunctions import writerow_preprocessing
 from BaseClassPage import WikipediaPageParser
 from tqdm import tqdm
 from csv import writer
 
 RECURSIVE: bool = bool(int(input("1: - Recursive True, 0: - False ")))
+RECUSIVE_DEPTH: int = int(input('Input recursive depth ')) if RECURSIVE else 0
 FILENAME: str = str(input('Input a filename .csv '))
 wiki_type: str = str(input("Choose wikipedia language. For instance ru or en "))
 url: str = str(input("Input a wiki url page "))
@@ -27,20 +29,21 @@ def preprocess_output(href: str, output: dict, hrefs: list):
     hrefs.append(local_hrefs)
     return output, hrefs
 
-def writerow_preprocessing(
-    short_article_name: str, dict_with_information: dict
-) -> list:
-    return [short_article_name] + [item for _, item in dict_with_information.items()]
-
-
-if RECURSIVE:
-    output, hrefs = get_output_from_page(url)
+def get_recursive(output, hrefs): 
     for href in tqdm(hrefs):
         if type(href) == list: 
             continue
-        output, hrefs = preprocess_output(href, output, hrefs)
+        output, new_hrefs = preprocess_output(href, output, hrefs)
+    return output, new_hrefs
+    
 
-
+if RECURSIVE:
+    output, hrefs = get_output_from_page(url)
+    output, new_hrefs = get_recursive(output, hrefs)
+    for _ in range(RECUSIVE_DEPTH + 1):
+        output, new_hrefs = get_recursive(output, new_hrefs)
+        
+        
 
 with open(f"{FILENAME}.csv", "w") as csv_file:
     write = writer(csv_file)

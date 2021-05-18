@@ -14,7 +14,7 @@ class WikipediaPageParser(BaseClassPageSettings):
     def get_common_info_about_page(self) -> None:
         self.hrefs: list = get_all_hrefs_from_page(self.soup)
         self.text_from_page: str = clear_nums_in_brascets(
-            "".join([part_of_page.text for part_of_page in self.soup.find_all("p")]),
+            "".join(part_of_page.text for part_of_page in self.soup.find_all("p"))
         )
 
     def get_information_from_right_table(self):
