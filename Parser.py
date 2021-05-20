@@ -1,18 +1,13 @@
 from SubFunctions import dict_preprocessing
-from SubFunctions import writerow_preprocessing
+from SubFunctions import write_to_file
 from BaseClassPage import WikipediaPageParser
 from tqdm import tqdm
-from csv import writer
 from re import search
 
-RECUSIVE_DEPTH: int = int(input("Input recursive depth "))
-FILENAME: str = str(input("Input a filename .csv "))
-url: str = str(input("Input a wiki url page "))
+URL:  str = str(input("Input a wiki url page "))
+WIKIPEDIA_URL = "https://{}.wikipedia.org".format(search("\/..\.", URL).group(0)[1:-1])
 
-WIKIPEDIA_URL = "https://{}.wikipedia.org".format(search("\/..\.", url).group(0)[1:-1])
-
-
-def get_output_from_page(url) -> dict:
+def get_output_from_page(url: str) -> dict:
     page = WikipediaPageParser(url)
     hrefs = page.hrefs
     information_from_page: dict = {
@@ -23,13 +18,14 @@ def get_output_from_page(url) -> dict:
 
 
 def preprocess_output(href: str, output: dict, hrefs: list):
+
     information_from_page, local_hrefs = get_output_from_page(WIKIPEDIA_URL + href)
     output: dict = dict_preprocessing(information_from_page, output)
     hrefs.append(local_hrefs)
     return output, hrefs
 
 
-def get_recursive(output, hrefs):
+def get_recursive(output: dict, hrefs: list):
     for href in tqdm(hrefs):
         if type(href) == list:
             continue
@@ -37,14 +33,9 @@ def get_recursive(output, hrefs):
     return output, new_hrefs
 
 
-def recursive_page_parser(url, filename, recursive_depth):
-    output, hrefs = get_output_from_page(url)
+def recursive_page_parser(filename: str, recursive_depth: int) -> None:
+    output, hrefs = get_output_from_page(URL)
     output, new_hrefs = get_recursive(output, hrefs)
     for _ in range(recursive_depth + 1):
         output, new_hrefs = get_recursive(output, new_hrefs)
-
-    with open(f"{filename}.csv", "w") as csv_file:
-        write = writer(csv_file)
-        write.writerow(["href", "text", "info"])
-        for href, elemnts in output.items():
-            write.writerow(writerow_preprocessing(href, elemnts))
+    write_to_file(filename, output)

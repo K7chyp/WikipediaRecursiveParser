@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup, element
+from csv import writer
 from re import sub
 from re import search
 from re import compile
@@ -63,3 +64,10 @@ def writerow_preprocessing(
     short_article_name: str, dict_with_information: dict
 ) -> list:
     return [short_article_name] + [item for _, item in dict_with_information.items()]
+
+def write_to_file(filename, output):
+    with open(f"{filename}.csv", "w") as csv_file:
+        write = writer(csv_file)
+        write.writerow(["href", "text", "info"])
+        for href, elemnts in output.items():
+            write.writerow(writerow_preprocessing(href, elemnts))
